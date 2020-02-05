@@ -84,7 +84,7 @@ Vagrant.configure('2') do |config|
             'build_user' => project_build_user,
             'build_dir' => guest_project_path,
             'ruby_version' => '2.1.8',
-            'install_dir' => "/opt/#{project_name}"
+            'install_dir' => "/opt/sfapm/td-agent/#{project_name}"
           }
         }
 
@@ -99,7 +99,7 @@ Vagrant.configure('2') do |config|
         elif command -v rpm &>/dev/null; then
           rpm -ev #{project_name} || true
         fi
-        rm -rf /opt/#{project_name} || true
+        rm -rf /opt/sfapm/td-agent/#{project_name} || true
       REMOVE_OMNIBUS
 
       # it will be resolved after new omnibus cookbook released, 2.3.1 or later.
@@ -147,8 +147,8 @@ Vagrant.configure('2') do |config|
       c.vm.provision :shell, :privileged => false, :inline => <<-OMNIBUS_BUILD
         #{export_gcc}
         export PATH="/opt/omnibus-toolchain/embedded/bin/:$PATH"
-        sudo mkdir -p /opt/#{project_name}
-        sudo chown #{project_build_user} /opt/#{project_name}
+        sudo mkdir -p /opt/sfapm/td-agent/#{project_name}
+        sudo chown #{project_build_user} /opt/sfapm/td-agent/#{project_name}
         cd #{guest_project_path}
         bundle install --path=/home/#{project_build_user}/.bundler
         bundle exec omnibus build #{project_name}#{td_agent_version}

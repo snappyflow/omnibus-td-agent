@@ -24,7 +24,7 @@ Starting td-agent:
   --pidfile=${TMP}/var/run/td-agent/td-agent.pid
   --user
   td-agent
-  ${TMP}/opt/td-agent/embedded/bin/ruby
+  ${TMP}/opt/sfapm/td-agent/td-agent/embedded/bin/ruby
   ${TMP}/usr/sbin/td-agent
   --log
   ${TMP}/var/log/td-agent/td-agent.log

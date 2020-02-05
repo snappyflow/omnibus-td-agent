@@ -9,7 +9,7 @@ description "Treasure Agent: A data collector for Treasure Data"
 license "Apache-2.0"
 license_file "LICENSE"
 
-install_dir     "/opt/td-agent"
+install_dir     "/opt/sfapm/td-agent/td-agent"
 build_version   "2.3.7"
 build_iteration 0
 

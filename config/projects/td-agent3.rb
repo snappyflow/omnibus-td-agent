@@ -8,9 +8,9 @@ homepage "http://treasuredata.com"
 description "Treasure Agent: A data collector for Treasure Data"
 
 if windows?
-  install_dir "#{default_root}/opt/#{name}"
+  install_dir "#{default_root}/opt/sfapm/td-agent/#{name}"
 else
-  install_dir "#{default_root}/#{name}"
+  install_dir "#{default_root}/sfapm/td-agent/#{name}"
 end
 
 build_version   "3.5.1"

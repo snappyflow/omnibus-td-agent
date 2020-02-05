@@ -28,7 +28,7 @@ start-stop-daemon
   --pidfile
   ${TMP}/var/run/td-agent/td-agent.pid
   --exec
-  ${TMP}/opt/td-agent/embedded/bin/ruby
+  ${TMP}/opt/sfapm/td-agent/td-agent/embedded/bin/ruby
   -c
   td-agent
   --group

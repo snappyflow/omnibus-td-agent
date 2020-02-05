@@ -1,0 +1,103 @@
+td_agent_dir=/opt/sfapm/td-agent/td-agent
+PROJECT_GROUP="${TD_AGENT_GROUP:-td-agent}"
+PROJECT_USER="${TD_AGENT_USER:-td-agent}"
+
+echo "adding \'${PROJECT_GROUP}\' group if needed..."
+getent group "${PROJECT_GROUP}" >/dev/null || /usr/sbin/groupadd -r "${PROJECT_GROUP}"
+echo "adding \'${PROJECT_USER}\' user if needed..."
+getent passwd ${PROJECT_USER} >/dev/null || \
+  /usr/sbin/useradd -r -g ${PROJECT_GROUP} -d /var/lib/${PROJECT_USER} -s /sbin/nologin -c "${PROJECT_USER}" ${PROJECT_USER}
+
+if [ ! -e "/var/log/td-agent/" ]; then
+  mkdir -p /var/log/td-agent/
+fi
+chown -R ${PROJECT_USER}:${PROJECT_GROUP} /var/log/td-agent/
+
+if [ ! -e "/var/run/td-agent/" ]; then
+  mkdir -p /var/run/td-agent/
+fi
+chown -R ${PROJECT_USER}:${PROJECT_GROUP} /var/run/td-agent/
+
+if [ ! -e "/opt/sfapm/td-agent/etc/td-agent/" ]; then
+  mkdir -p /opt/sfapm/td-agent/etc/td-agent/
+  mkdir -p /opt/sfapm/td-agent/etc/td-agent/plugin
+fi
+if [ ! -e "/opt/sfapm/td-agent/etc/td-agent/td-agent.conf" ]; then
+  echo "Installing default conffile..."
+  cp -f ${td_agent_dir}/etc/td-agent/td-agent.conf.tmpl /opt/sfapm/td-agent/etc/td-agent/td-agent.conf
+fi
+
+# 2011/11/13 Kazuki Ohta <k@treasure-data.com>
+# This prevents prelink, to break the Ruby intepreter.
+if [ -d "/etc/prelink.conf.d/" ]; then
+  echo "prelink detected. Installing /etc/prelink.conf.d/td-agent-ruby.conf ..."
+  cp -f ${td_agent_dir}/etc/td-agent/prelink.conf.d/td-agent.conf /etc/prelink.conf.d/td-agent-ruby.conf
+elif [ -f "/etc/prelink.conf" ]; then
+  if [ $(grep '\-b ${td_agent_dir}/embedded/bin/ruby' -c /etc/prelink.conf) -eq 0 ]; then
+    echo "prelink detected, but /etc/prelink.conf.d/ dosen't exist. Adding /etc/prelink.conf ..."
+    echo "-b ${td_agent_dir}/embedded/bin/ruby" >> /etc/prelink.conf
+  fi
+fi
+
+# 2013/03/04 Kazuki Ohta <k@treasure-data.com>
+# Install log rotation script.
+if [ -d "/etc/logrotate.d/" -a ! -f "/etc/logrotate.d/td-agent" ]; then
+  echo "Installing logrotate.d config"
+  cp -f ${td_agent_dir}/etc/td-agent/logrotate.d/td-agent.logrotate /etc/logrotate.d/td-agent
+fi
+
+# 2011/11/13 Kazuki Ohta <k@treasure-data.com>
+# Before td-agent v1.1.0, fluentd has a bug of loading plugin before changing
+# to the right user. Then, these directories were created with root permission.
+# The following lines fix that problem.
+if [ ! -e "/var/log/td-agent/buffer/" ]; then
+  mkdir -p /var/log/td-agent/buffer/
+fi
+if [ -d "/var/log/td-agent/buffer/" ]; then
+  chown -R ${PROJECT_USER}:${PROJECT_GROUP} /var/log/td-agent/buffer/
+fi
+if [ ! -e "/tmp/td-agent/" ]; then
+  mkdir -p /tmp/td-agent/
+fi
+if [ -d "/tmp/td-agent/" ]; then
+  chown -R ${PROJECT_USER}:${PROJECT_GROUP} /tmp/td-agent/
+fi
+
+cp -f ${td_agent_dir}/etc/init.d/td-agent /etc/init.d/td-agent
+cp -f ${td_agent_dir}/usr/sbin/td-agent /usr/sbin/td-agent
+chmod 755 /usr/sbin/td-agent
+cp -f ${td_agent_dir}/usr/sbin/td-agent-gem /usr/sbin/td-agent-gem
+chmod 755 /usr/sbin/td-agent-gem
+if [ -f ${td_agent_dir}/usr/sbin/td-agent-ui ]; then
+    cp -f ${td_agent_dir}/usr/sbin/td-agent-ui /usr/sbin/td-agent-ui
+    chmod 755 /usr/sbin/td-agent-ui
+fi
+if [ -f ${td_agent_dir}/usr/bin/td ]; then
+    cp -f ${td_agent_dir}/usr/bin/td /usr/bin/td
+    chmod 755 /usr/bin/td
+fi
+
+if [ -d "/usr/lib/systemd/system/" ]; then
+  cp -f ${td_agent_dir}/etc/systemd/td-agent.service /usr/lib/systemd/system/
+  chmod 644 /usr/lib/systemd/system/td-agent.service
+fi
+
+if [ "${PROJECT_USER}:${PROJECT_NAME}" != "td-agent:td-agent" ]; then
+  # for systemd
+  sed -i "s/User=td-agent/User=${PROJECT_USER}/" /usr/lib/systemd/system/td-agent.service
+  sed -i "s/Group=td-agent/Group=${PROJECT_GROUP}/" /usr/lib/systemd/system/td-agent.service
+
+  # for init.d
+  sed -i "s/TD_AGENT_USER=td-agent/TD_AGENT_USER=${PROJECT_USER}/" /etc/init.d/td-agent
+  sed -i "s/TD_AGENT_GROUP=td-agent/TD_AGENT_GROUP=${PROJECT_GROUP}/" /etc/init.d/td-agent
+fi
+
+echo "Configure td-agent to start, when booting up the OS..."
+/sbin/chkconfig --add td-agent
+
+# 2011/03/24 Kazuki Ohta <k@treasure-data.com>
+# When upgrade, restart agent if it's launched
+if [ "$1" = "2" ]; then
+  /sbin/service td-agent condrestart >/dev/null 2>&1 || :
+fi
+

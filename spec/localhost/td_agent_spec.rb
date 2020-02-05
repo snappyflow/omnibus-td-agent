@@ -9,11 +9,11 @@ describe file('/etc/init.d/td-agent') do
   it { should be_mode 755 }
 end
 
-describe file('/etc/td-agent') do
+describe file('/opt/sfapm/td-agent/etc/td-agent') do
   it { should be_directory }
 end
 
-describe file('/etc/td-agent/td-agent.conf') do
+describe file('/opt/sfapm/td-agent/etc/td-agent/td-agent.conf') do
   it { should be_file }
   it { should contain '</match>' }
   it { should contain '</source>' }
@@ -26,7 +26,7 @@ end
   end
 end
 
-describe file('/opt/td-agent') do
+describe file('/opt/sfapm/td-agent/td-agent/') do
   it { should be_directory }
 end
 

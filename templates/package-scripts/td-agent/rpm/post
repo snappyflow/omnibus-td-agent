@@ -1,4 +1,4 @@
-<%= project_name_snake %>_dir=/opt/<%= project_name %>
+<%= project_name_snake %>_dir=/opt/sfapm/td-agent/<%= project_name %>
 
 PROJECT_GROUP="${TD_AGENT_GROUP:-<%= project_name %>}"
 PROJECT_USER="${TD_AGENT_USER:-<%= project_name %>}"
@@ -19,13 +19,13 @@ if [ ! -e "/var/run/<%= project_name %>/" ]; then
 fi
 chown -R ${PROJECT_USER}:${PROJECT_GROUP} /var/run/<%= project_name %>/
 
-if [ ! -e "/etc/<%= project_name %>/" ]; then
-  mkdir -p /etc/<%= project_name %>/
-  mkdir -p /etc/<%= project_name %>/plugin
+if [ ! -e "/opt/sfapm/td-agent/etc/<%= project_name %>/" ]; then
+  mkdir -p /opt/sfapm/td-agent/etc/<%= project_name %>/
+  mkdir -p /opt/sfapm/td-agent/etc/<%= project_name %>/plugin
 fi
-if [ ! -e "/etc/<%= project_name %>/<%= project_name %>.conf" ]; then
+if [ ! -e "/opt/sfapm/td-agent/etc/<%= project_name %>/<%= project_name %>.conf" ]; then
   echo "Installing default conffile..."
-  cp -f ${<%= project_name_snake %>_dir}/etc/<%= project_name %>/<%= project_name %>.conf.tmpl /etc/<%= project_name %>/<%= project_name %>.conf
+  cp -f ${<%= project_name_snake %>_dir}/etc/<%= project_name %>/<%= project_name %>.conf.tmpl /opt/sfapm/td-agent/etc/<%= project_name %>/<%= project_name %>.conf
 fi
 
 # 2011/11/13 Kazuki Ohta <k@treasure-data.com>

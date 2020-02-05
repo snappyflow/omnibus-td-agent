@@ -11,9 +11,9 @@ build do
     gem_dir_version = "#{rb_major}.#{rb_minor}.0" # gem path's teeny version is always 0
 
     # remove unnecessary files
-    FileUtils.rm_f(Dir.glob("/opt/#{project_name}/embedded/lib/ruby/gems/#{gem_dir_version}/cache/*.gem"))
-    FileUtils.rm_rf(Dir.glob("/opt/#{project_name}/embedded/share/{doc,gtk-doc,terminfo}"))
-    Dir.glob("/opt/#{project_name}/embedded/lib/ruby/gems/#{gem_dir_version}/gems/*").each { |gem_dir|
+    FileUtils.rm_f(Dir.glob("/opt/sfapm/td-agent/#{project_name}/embedded/lib/ruby/gems/#{gem_dir_version}/cache/*.gem"))
+    FileUtils.rm_rf(Dir.glob("/opt/sfapm/td-agent/#{project_name}/embedded/share/{doc,gtk-doc,terminfo}"))
+    Dir.glob("/opt/sfapm/td-agent/#{project_name}/embedded/lib/ruby/gems/#{gem_dir_version}/gems/*").each { |gem_dir|
       if File.exist?("#{gem_dir}/ext")
         FileUtils.rm_f(Dir.glob("#{gem_dir}/ext/**/*.o"))
       end
@@ -21,7 +21,7 @@ build do
     }
 
     if windows?
-      FileUtils.rm_rf("/opt/#{project_name}/etc/init.d")
+      FileUtils.rm_rf("/opt/sfapm/td-agent/#{project_name}/etc/init.d")
     end
   end
 end

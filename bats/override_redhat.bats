@@ -38,7 +38,7 @@ Starting td-agent:
   -10
   --user
   nobody
-  ${TMP}/opt/td-agent/embedded/bin/ruby
+  ${TMP}/opt/sfapm/td-agent/td-agent/embedded/bin/ruby
   /path/to/td-agent
   --verbose
   --verbose
@@ -76,7 +76,7 @@ Starting td-agent:
   --pidfile=${TMP}/path/to/td-agent.pid
   --user
   nobody
-  ${TMP}/opt/td-agent/embedded/bin/ruby
+  ${TMP}/opt/sfapm/td-agent/td-agent/embedded/bin/ruby
   /path/to/td-agent
   --verbose
   --verbose

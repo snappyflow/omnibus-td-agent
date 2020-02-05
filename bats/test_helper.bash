@@ -52,11 +52,11 @@ init_debian() {
   touch "${TMP}/usr/sbin/td-agent"
   chmod +x "${TMP}/usr/sbin/td-agent"
 
-  mkdir -p "${TMP}/opt/td-agent/embedded/bin"
-  touch "${TMP}/opt/td-agent/embedded/bin/ruby"
-  chmod +x "${TMP}/opt/td-agent/embedded/bin/ruby"
+  mkdir -p "${TMP}/opt/sfapm/td-agent/td-agent/embedded/bin"
+  touch "${TMP}/opt/sfapm/td-agent/td-agent/embedded/bin/ruby"
+  chmod +x "${TMP}/opt/sfapm/td-agent/td-agent/embedded/bin/ruby"
 
-  mkdir -p "${TMP}/opt/td-agent/embedded/lib"
+  mkdir -p "${TMP}/opt/sfapm/td-agent/td-agent/embedded/lib"
 
   mkdir -p "${TMP}/var/log/td-agent"
 
@@ -98,11 +98,11 @@ init_redhat() {
   touch "${TMP}/usr/sbin/td-agent"
   chmod +x "${TMP}/usr/sbin/td-agent"
 
-  mkdir -p "${TMP}/opt/td-agent/embedded/bin"
-  touch "${TMP}/opt/td-agent/embedded/bin/ruby"
-  chmod +x "${TMP}/opt/td-agent/embedded/bin/ruby"
+  mkdir -p "${TMP}/opt/sfapm/td-agent/td-agent/embedded/bin"
+  touch "${TMP}/opt/sfapm/td-agent/td-agent/embedded/bin/ruby"
+  chmod +x "${TMP}/opt/sfapm/td-agent/td-agent/embedded/bin/ruby"
 
-  mkdir -p "${TMP}/opt/td-agent/embedded/lib"
+  mkdir -p "${TMP}/opt/sfapm/td-agent/td-agent/embedded/lib"
 
   mkdir -p "${TMP}/var/lock/subsys"
 
